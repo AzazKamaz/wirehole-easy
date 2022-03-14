@@ -1,0 +1,85 @@
+version: "2"
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    environment:
+      TZ: "${TZ}"
+      WEBPASSWORD: "${DNS_WEB_PASS}"
+      DNSMASQ_LISTENING: all
+    volumes:
+      - ./data/pihole:/etc/pihole
+      - ./data/dnsmasq.d:/etc/dnsmasq.d
+    networks:
+      net_1:
+        ipv4_address: 172.23.147.2
+        ipv6_address: fc00:a056:4629:ada0::2
+      net_2:
+        ipv4_address: 172.23.147.10
+        ipv6_address: fc00:a056:4629:ada0::a
+
+  wireguard_1:
+    container_name: wireguard_1
+    image: weejewel/wg-easy
+    restart: unless-stopped
+    environment:
+      PASSWORD: "${WG_WEB_PASS}"
+      WG_HOST: "${WG_HOST}"
+      WG_PORT: "${WG_PORT_1}"
+      WG_DEFAULT_ADDRESS: 10.13.37.x
+      WG_DEFAULT_DNS: 172.23.147.2, fc00:a056:4629:ada0::2
+    volumes:
+      - ./data/wireguard_1:/etc/wireguard
+    ports:
+      - "${WG_PORT_1}:51820/udp"
+    cap_add: [NET_ADMIN, SYS_MODULE]
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
+    networks:
+      net_1:
+        ipv4_address: 172.23.147.3
+        ipv6_address: fc00:a056:4629:ada0::3
+
+  wireguard_2:
+    container_name: wireguard_2
+    image: weejewel/wg-easy
+    restart: unless-stopped
+    environment:
+      PASSWORD: "${WG_WEB_PASS}"
+      WG_HOST: "${WG_HOST}"
+      WG_PORT: "${WG_PORT_2}"
+      WG_DEFAULT_ADDRESS: 10.14.88.x
+      WG_DEFAULT_DNS: 172.23.147.10, fc00:a056:4629:ada0::a
+    volumes:
+      - ./data/wireguard_2:/etc/wireguard
+    ports:
+      - "${WG_PORT_2}:51820/udp"
+    cap_add: [NET_ADMIN, SYS_MODULE]
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
+    networks:
+      net_2:
+        ipv4_address: 172.23.147.11
+        ipv6_address: fc00:a056:4629:ada0::b
+
+networks:
+  net_1:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 172.23.147.0/29
+          gateway: 172.23.147.1
+        - subnet: fc00:a056:4629:ada0::0/125
+          gateway: fc00:a056:4629:ada0::1
+  net_2:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 172.23.147.8/29
+          gateway: 172.23.147.9
+        - subnet: fc00:a056:4629:ada0::8/125
+          gateway: fc00:a056:4629:ada0::9
