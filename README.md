@@ -4,20 +4,21 @@ WireHole Easy is a simple Docker Compose setup that combines:
 - [Wireguard Easy (wg-easy)](https://github.com/WeeJeWel/wg-easy) - WireGuard docker image with web gui
 - [Pi-hole](https://github.com/pi-hole/pi-hole) - DNS server that blocks unwanted content with web gui
 
-Also this setup can be [easily multiplied](#run-another-instance) if you need many VPN subnets (just create another deployment or duplicate `wireguard` serice) (need to edit subnets and ips in `docker-compose.yml`)
+Also this setup can be [easily multiplied](#run-another-instance) if you need many VPN subnets
 
 ---
 
 ### Installation
+- Passwords can be generated using `cat /dev/random | head -c 30 | base64`
 1. Install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) somehow
-2. Create `.env` (like `.env.example`):
+2. Clone repo and cd: `clone https://github.com/AzazKamaz/wirehole-easy.git && cd wirehole-easy`
+3. Create `.env` (example is `.env.example`):
    - `DNS_WEB_PASS` - password for Pi-hole web gui
    - `WG_WEB_PASS` - password for WireGuard Easy web gui
    - `WG_HOST` - public ip of the server
    - `WG_PORT` - port on which WireGuard will listen
    - `TZ` (optional) - logs rotation timezone (at midnight) (see [Pi-hole](https://github.com/pi-hole/docker-pi-hole/tree/master#recommended-variables))
-3. Run: `docker-compose up -d`
-
+4. Run: `sudo docker-compose up -d`
 
 ### What is accessible from inside the VPN
 - `10.13.37.0/24` - VPN subnet
