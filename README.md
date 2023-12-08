@@ -11,7 +11,7 @@ Also this setup can be [easily multiplied](#run-another-instance) if you need ma
 ### Installation
 - Passwords can be generated using `cat /dev/random | head -c 30 | base64`
 1. Install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) somehow
-2. Clone repo and cd: `clone https://github.com/AzazKamaz/wirehole-easy.git && cd wirehole-easy`
+2. Clone repo and cd: `git clone https://github.com/AzazKamaz/wirehole-easy.git && cd wirehole-easy`
 3. Create `.env` (example is `.env.example`):
    - `DNS_WEB_PASS` - password for Pi-hole web gui
    - `WG_WEB_PASS` - password for WireGuard Easy web gui
